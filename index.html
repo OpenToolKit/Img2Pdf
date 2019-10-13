@@ -6,12 +6,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Img2Pdf</title>
-    <link rel="stylesheet" href="CSS/bulma.min-0.7.5.css">
     <link rel="shortcut icon" type="image/x-icon" href="favicon.ico">
     <link rel="icon" type="image/x-icon" href="favicon.ico">
-    <script defer src="JS/pdfkit-standalone-0.10.0.js"></script>
-    <script defer src="JS/blob-stream-0.1.3.js"></script>
-    <script defer src="JS/fa-5.3.1.js"></script>
+    <link rel="stylesheet" href="css/bulma.min-0.7.5.css">
+    <script defer src="js/pdfkit-standalone-0.10.0.js"></script>
+    <script defer src="js/blob-stream-0.1.3.js"></script>
+    <script defer src="js/fa-5.3.1.js"></script>
 </head>
 
 <body>
@@ -147,8 +147,6 @@
 
                 reader.onload = async function (e) {
                     var img = await getImgObj(e.target.result);
-                    console.log(img.width + '*' + img.height);
-                    console.log(img.src);
                     input_img_data.push(img);
 
                     if (input_img_data.length == input_file_count) {
@@ -202,6 +200,7 @@
 
 
         function generatePdf(img_data) {
+
             const doc = new PDFDocument({
                 autoFirstPage: false,
                 pdfVersion: 1.7,
@@ -211,7 +210,7 @@
             doc.info = {
                 Title: 'Image Doc',
                 Author: 'Img2Pdf',
-                Keywords: 'img2pdf.github.io'
+                Keywords: 'https://opentoolkit.github.io/Img2Pdf/'
             }
             const stream = doc.pipe(blobStream());
 
