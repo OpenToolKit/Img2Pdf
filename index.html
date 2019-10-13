@@ -18,7 +18,8 @@
     <style>
         .iframe-container {
             overflow: hidden;
-            padding-top: 60%;
+            height: 100%;
+            width: 100%;
             position: relative;
         }
 
@@ -29,6 +30,12 @@
             position: absolute;
             top: 0;
             width: 100%;
+        }
+
+        @media screen and (max-width: 780px) {
+            .iframe-container {
+                padding-top: 123%;
+            }
         }
     </style>
 
@@ -50,7 +57,7 @@
                             </div>
                             <div class="buttons is-centered">
                                 <span class="icon is-medium has-text-success">
-                                    <i class="fas fa-arrows-alt-v fa-2x"></i>
+                                    <i class="fas fa-angle-double-down fa-2x"></i>
                                 </span>
                             </div>
                             <div class="buttons is-centered">
@@ -62,31 +69,31 @@
 
                         <div class="tile is-child box">
                             <div class="content">
-                                <div class="file is-centered is-boxed">
+                                <div class="file is-centered has-name is-fullwidth is-boxed">
                                     <label class="file-label">
                                         <input class="file-input" type="file" id="input_img" multiple
                                             accept="image/png, image/jpeg">
                                         <span class="file-cta">
-                                            <span class="file-icon">
-                                                <i class="fas fa-upload fa-1x"></i>
+                                            <span class="file-icon has-text-primary">
+                                                <i class="fas fa-file-upload fa-2x "></i>
                                             </span>
-                                            <span class="file-label">
-                                                Select one or more Images ❤️😉
-                                            </span>
+                                        </span>
+                                        <span id="selected-file-count" class="file-name has-text-centered">
+                                            Click above to select Images 😉
                                         </span>
                                     </label>
                                 </div>
                             </div>
-                            <div class="tags">
+                            <div class="tags ">
                                 <span class="tag is-rounded is-warning">Privacy Focused</i></span>
                                 <span class="tag is-rounded is-info">No Tracking</span>
                                 <span class="tag is-rounded is-danger">No Ads </span>
                                 <span class="tag is-rounded is-success">Fast Conversion</span>
-                                <span class="tag is-rounded is-light">No Spam</span>
+                                <span class="tag is-rounded is-light">Secure</span>
                                 <span class="tag is-rounded is-dark">Open source </span>
                             </div>
                             <div class="buttons is-centered">
-                                <a class="button" href="https://github.com/anr007">
+                                <a class="button" href="https://github.com/OpenToolKit/Img2Pdf">
                                     <span class="icon">
                                         <i class="fab fa-github"></i>
                                     </span>
@@ -95,8 +102,8 @@
                             </div>
                             <div class="buttons is-centered">
                                 <a href="https://bulma.io" target="_blank">
-                                    <img src="https://bulma.io/images/made-with-bulma--semiblack.png"
-                                        alt="Made with Bulma" width="163" height="31"></a>
+                                    <img src="res/made-with-bulma--semiblack.png" alt="Made with Bulma" width="163"
+                                        height="31"></a>
                             </div>
                         </div>
 
@@ -124,11 +131,22 @@
             var input_img_data = [];
             var input_file_count = this.files.length;
 
+            const selected_file_count = document.getElementById('selected-file-count');
+            if (input_file_count == 1) {
+                selected_file_count.textContent = input_file_count + ' file selected'
+            } else if (input_file_count > 1) {
+                selected_file_count.textContent = input_file_count + ' files selected'
+            }
+
+
             for (let i = 0; i < this.files.length; i++) {
 
                 const file = this.files[i];
 
-                if (!file.type.startsWith('image/')) { continue }
+                if (!file.type.startsWith('image/')) {
+                    selected_file_count.textContent = 'Unsupported file format ❌'
+                    continue;
+                }
 
                 const reader = new FileReader();
 
