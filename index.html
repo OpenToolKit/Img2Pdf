@@ -6,13 +6,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <title>Img2Pdf - Convert PNG/JPG/JPEG to PDF in your browser!</title>
-    <meta name="description" content="Free, In-browser, Privacy friendly image to PDF convertor. Supports JPG/JPEG,PNG Image file formats and multiple image conversion at once. Your content stays secure in your browser itself.">
+    <meta name="description"
+        content="Free, In-browser, Privacy friendly image to PDF convertor. Supports JPG/JPEG,PNG Image file formats and multiple image conversion at once. Your content stays secure in your browser itself.">
     <link rel="shortcut icon" type="image/x-icon" href="img2pdf-favicon.ico">
     <link rel="icon" type="image/x-icon" href="img2pdf-favicon.ico">
     <link rel="stylesheet" href="css/bulma.min-0.7.5.css">
     <link rel="stylesheet" href="css/animate.min-3.7.2.css">
     <script defer src="js/pdfkit-standalone-0.10.0.js"></script>
     <script defer src="js/blob-stream-0.1.3.js"></script>
+    <script defer src="js/compressor-min-1.0.6.js"></script>
     <script async src="js/fa-5.3.1.js"></script>
     <script>
         function animateCSS(element, animationName, callback) {
@@ -107,13 +109,36 @@
                                     </label>
                                 </div>
                             </div>
-                            <div class="tags ">
+                            <div class="field has-addons">
+                                <div class="control is-expanded">
+                                    <div class="select is-small is-fullwidth">
+                                        <select id="compress-quality">
+                                            <option value=-1>No</option>
+                                            <option value=0.9>10%</option>
+                                            <option value=0.8>20%</option>
+                                            <option value=0.7>30%</option>
+                                            <option value=0.6>40%</option>
+                                            <option value=0.5>50%</option>
+                                            <option value=0.4>60%</option>
+                                            <option value=0.3>70%</option>
+                                            <option value=0.2>80%</option>
+                                            <option value=0.1>90%</option>
+                                            <option value=0>Max</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="control">
+                                    <button class="button is-small is-static">Compress PDF</button>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="tags">
                                 <span class="tag is-rounded is-warning">Privacy Focused</i></span>
                                 <span class="tag is-rounded is-info">No Tracking</span>
                                 <span class="tag is-rounded is-danger">No Ads </span>
                                 <span class="tag is-rounded is-success">Fast Conversion</span>
                                 <span class="tag is-rounded is-link">Secure</span>
-                                <span class="tag is-rounded is-dark">Open source </span>
+                                <span class="tag is-rounded is-dark">Built-In Compression</span>
                             </div>
                             <div class="buttons is-centered">
                                 <a class="button" href="https://github.com/OpenToolKit/Img2Pdf">
@@ -151,10 +176,15 @@
         const input_img = document.getElementById('input_img');
         input_img.addEventListener('input', onInputImage);
 
+        var CQ = -1;
+        const compress_quality = document.getElementById('compress-quality');
+        compress_quality.addEventListener('change', setCompressQuality);
+
+
         function onInputImage() {
             var input_img_data = [];
             var input_file_count = this.files.length;
-            console.log(input_file_count);
+            console.log("images: " + input_file_count);
 
             const output_pdf = document.getElementById('output_pdf')
             console.log(output_pdf.src);
@@ -191,9 +221,70 @@
                     }
                 }
 
-                reader.readAsDataURL(file);
+                if (CQ != -1) {
+                    async function waitTillCompress(file) {
+                        var compress_out = await compressImg(file);
+                        reader.readAsDataURL(compress_out)
+                    }
+                    waitTillCompress(file);
+                } else {
+                    reader.readAsDataURL(file);
+                }
 
             }
+
+        }
+
+        function setCompressQuality() {
+            CQ = Number(this.value)
+            notifyInputRefresh()
+        }
+
+        function notifyInputRefresh() {
+            const input_event = new Event("input");
+            const input_img = document.getElementById('input_img')
+            input_img.dispatchEvent(input_event);
+        }
+
+        function compressImg(file) {
+
+            return new Promise(function (resolve, reject) {
+                var opt = {
+                    strict: true,
+                    checkOrientation: true,
+                    maxWidth: Infinity,
+                    maxHeight: Infinity,
+                    minWidth: 0,
+                    minHeight: 0,
+                    width: undefined,
+                    height: undefined,
+                    /**
+                     * The quality of the output image.
+                     * It must be a number between `0` and `1`,
+                     * and only available for `image/jpeg` and `image/webp` images.
+                     * Check out {@link https://developer.mozilla.org/en-US/docs/Web/API/HTMLCanvasElement/toBlob canvas.toBlob}.
+                     * @type {number}
+                     */
+                    quality: (CQ != -1) ? CQ : 0.8,
+                    mimeType: 'auto',
+                    /**
+                     * PNG files over this value (5 MB by default) will be converted to JPEGs.
+                     * To disable this, just set the value to `Infinity`.
+                     * @type {number}
+                     */
+                    convertSize: 1,
+                    beforeDraw: null,
+                    drew: null,
+                    success(result) {
+                        resolve(result)
+                    },
+                    error(err) {
+                        console.log(err.message);
+                    },
+                };
+
+                new Compressor(file, opt);
+            });
 
         }
 
