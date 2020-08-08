@@ -62,33 +62,45 @@
             animation-delay: 3s;
             animation-iteration-count: infinite;
         }
+
+        .tile::-webkit-scrollbar { width: 0 !important }
+        .tile { overflow: -moz-scrollbars-none; }
+
+        html::-webkit-scrollbar { width: 0 !important }
+        html { overflow: -moz-scrollbars-none; }
+        
+        .logo-block {
+            display: inline-block;
+        }
     </style>
 
-    <section class="hero is-dark is-fullheight is-bold">
+    <section class="hero is-dark is-fullheight is-bold" >
         <div class="hero-body">
             <div class="container">
                 <div class="tile is-ancestor">
-                    <div class="tile is-3 is-vertical is-parent">
+                    <div class="tile is-4 is-vertical is-parent" style="max-height: 90vh;overflow: scroll;">
 
                         <div class="tile is-child box animated zoomIn delay-1s">
                             <div class="content">
                                 <h1 class="has-text-grey-darker has-text-weight-semibold">Img2Pdf</h1>
                                 <h6 class="has-text-grey-dark">Made with ❤️ towards Privacy ⭐</h6>
                             </div>
-                            <div class="buttons is-centered">
-                                <span class="icon is-large has-text-info">
-                                    <i class="fas fa-images fa-3x"></i>
-                                </span>
-                            </div>
-                            <div class="buttons is-centered">
-                                <span class="icon is-medium has-text-success">
-                                    <i class="fas fa-angle-double-down fa-2x"></i>
-                                </span>
-                            </div>
-                            <div class="buttons is-centered">
-                                <span class="icon is-large has-text-danger">
-                                    <i class="fas fa-file-pdf fa-3x"></i>
-                                </span>
+                            <div id="logo" style="text-align: center;">
+                                <div class="buttons logo-block" style="margin: 0 10px;">
+                                    <span class="icon is-large has-text-info">
+                                        <i class="fas fa-images fa-3x"></i>
+                                    </span>
+                                </div>
+                                <div class="buttons logo-block" style="margin: 0 0 0 5px;">
+                                    <span class="icon is-medium has-text-success">
+                                        <i class="fas fa-angle-double-right fa-3x"></i>
+                                    </span>
+                                </div>
+                                <div class="buttons logo-block" style="margin: 0 10px;">
+                                    <span class="icon is-large has-text-danger">
+                                        <i class="fas fa-file-pdf fa-3x"></i>
+                                    </span>
+                                </div>
                             </div>
                         </div>
 
